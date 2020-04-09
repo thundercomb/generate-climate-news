@@ -12,10 +12,10 @@ steps:
   args:
   - '-c'
   - |
-     gsutil cp gs://${_ML_MODELS_BUCKET}/clnn-news/*latest ${_MODEL_ARCHIVE}
+     gsutil cp gs://$${ML_MODELS_BUCKET}/clnn-news/*latest ${_MODEL_ARCHIVE}
   dir: /workspace
   env:
-  - '_ML_MODELS_BUCKET=${PROJECT_ID}-models'
+  - 'ML_MODELS_BUCKET=${PROJECT_ID}-models'
 
 - name: "gcr.io/cloud-builders/gsutil"
   entrypoint: 'sh'
