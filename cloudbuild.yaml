@@ -1,13 +1,17 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'eu.gcr.io/${PROJECT_ID}/${_IMAGE_NAME}', '.']
+  dir: /workspace/app
 
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'eu.gcr.io/${PROJECT_ID}/${_IMAGE_NAME}']
+  dir: /workspace/app
 
 - name: "gcr.io/cloud-builders/gsutil"
   args: ['cp', 'gs://${_ML_MODELS_BUCKET}/clnn-news/*latest', '${_MODEL_ARCHIVE}']
   dir: /workspace
+  env:
+  - '_ML_MODELS_BUCKET=${PROJECT_ID}-models'
 
 - name: "gcr.io/cloud-builders/gsutil"
   entrypoint: 'sh'
@@ -21,12 +25,47 @@ steps:
   entrypoint: sh
   args: ['-c', 'python3 generate.py']
   env:
-  - 'ML_ARTICLES_BUCKET=${_ML_ARTICLES_BUCKET}'
+  - 'ML_ARTICLES_BUCKET=${PROJECT_ID}-generated-articles'
   - 'TEMPERATURE=${_TEMPERATURE}'
 
+- id: 'Terraform init'
+  name: 'hashicorp/terraform'
+  entrypoint: 'sh'
+  args:
+  - '-c'
+  - |
+     terraform init \
+       -backend-config="bucket=${PROJECT_ID}-terraform-state" \
+       -backend-config="prefix=${REPO_NAME}"
+  dir: /workspace/infra
+
+- id: 'Terraform plan'
+  name: 'hashicorp/terraform'
+  entrypoint: 'sh'
+  args:
+  - '-c'
+  - |
+     terraform plan
+  dir: /workspace/infra
+  env:
+  - "GOOGLE_PROJECT=${PROJECT_ID}"
+  - "TF_VAR_analytics_project=${_ANALYTICS_PROJECT}"
+  - "TF_VAR_region=${_REGION}"
+
+- id: 'Terraform apply'
+  name: 'hashicorp/terraform'
+  entrypoint: 'sh'
+  args:
+  - '-c'
+  - |
+     terraform apply -auto-approve
+  dir: /workspace/infra
+  env:
+  - "GOOGLE_PROJECT=${PROJECT_ID}"
+  - "TF_VAR_analytics_project=${_ANALYTICS_PROJECT}"
+  - "TF_VAR_region=${_REGION}"
+
 substitutions:
-  _ML_MODELS_BUCKET: climate-analytics-ml-models
   _MODEL_ARCHIVE: clnn-model.zip
-  _ML_ARTICLES_BUCKET: climate-analytics-ml-articles
   _IMAGE_NAME: generate-climate-news
   _TEMPERATURE: '1.0'
