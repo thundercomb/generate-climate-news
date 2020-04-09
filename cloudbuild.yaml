@@ -29,7 +29,7 @@ steps:
   entrypoint: sh
   args: ['-c', 'python3 /workspace/app/generate.py']
   env:
-  - 'ML_ARTICLES_BUCKET=${PROJECT_ID}-generated-articles'
+  - 'ML_ARTICLES_BUCKET=${_ANALYTICS_PROJECT}-generated-articles'
   - 'TEMPERATURE=${_TEMPERATURE}'
 
 - id: 'Terraform init'
