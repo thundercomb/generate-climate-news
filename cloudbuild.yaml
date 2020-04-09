@@ -8,7 +8,11 @@ steps:
   dir: /workspace/app
 
 - name: "gcr.io/cloud-builders/gsutil"
-  args: ['cp', 'gs://${_ML_MODELS_BUCKET}/clnn-news/*latest', '${_MODEL_ARCHIVE}']
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+     gsutil cp gs://${_ML_MODELS_BUCKET}/clnn-news/*latest ${_MODEL_ARCHIVE}
   dir: /workspace
   env:
   - '_ML_MODELS_BUCKET=${PROJECT_ID}-models'
