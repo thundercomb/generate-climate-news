@@ -15,7 +15,7 @@ steps:
      gsutil cp gs://$${ML_MODELS_BUCKET}/clnn-news/*latest ${_MODEL_ARCHIVE}
   dir: /workspace
   env:
-  - 'ML_MODELS_BUCKET=${PROJECT_ID}-models'
+  - 'ML_MODELS_BUCKET=${_ANALYTICS_PROJECT}-models'
 
 - name: "gcr.io/cloud-builders/gsutil"
   entrypoint: 'sh'
