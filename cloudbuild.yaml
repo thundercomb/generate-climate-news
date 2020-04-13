@@ -53,6 +53,7 @@ steps:
   dir: /workspace/infra
   env:
   - "GOOGLE_PROJECT=${PROJECT_ID}"
+  - "TF_VAR_orchestration_project=${_ORCHESTRATION_PROJECT}"
   - "TF_VAR_analytics_project=${_ANALYTICS_PROJECT}"
   - "TF_VAR_region=${_REGION}"
 
@@ -66,6 +67,7 @@ steps:
   dir: /workspace/infra
   env:
   - "GOOGLE_PROJECT=${PROJECT_ID}"
+  - "TF_VAR_orchestration_project=${_ORCHESTRATION_PROJECT}"
   - "TF_VAR_analytics_project=${_ANALYTICS_PROJECT}"
   - "TF_VAR_region=${_REGION}"
 

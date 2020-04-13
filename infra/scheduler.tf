@@ -7,7 +7,7 @@ resource "google_cloud_scheduler_job" "generate_climate_news" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://cloudbuild.googleapis.com/v1/projects/${var.GOOGLE_PROJECT}/triggers/BUILD-generate-climate-news:run"
+    uri         = "https://cloudbuild.googleapis.com/v1/projects/${var.orchestration_project}/triggers/BUILD-generate-climate-news:run"
     body        = base64encode("{\"branchName\":\"master\"}")
 
     oauth_token {
