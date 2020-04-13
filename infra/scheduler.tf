@@ -11,7 +11,7 @@ resource "google_cloud_scheduler_job" "generate_climate_news" {
     body        = base64encode("{\"branchName\":\"master\"}")
 
     oauth_token {
-      service_account_email = "${var.analytics_project}@appspot.gserviceaccount.com"
+      service_account_email = "${var.orchestration_project}@appspot.gserviceaccount.com"
     }
   }
 }
